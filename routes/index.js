@@ -1,12 +1,16 @@
 import Router from 'koa-router';
 
-import BasicRouter from './basic';
 import { wrapper } from 'koa-swagger-decorator';
+import UserRouter from './user';
 
 const router = new Router();
 wrapper(router);
 
-router.swagger({ title: 'SERVER', description: 'API DOC', version: '1.0.0' });
-router.map(BasicRouter);
+router.swagger({
+  title: 'NOTEPAD-SERVER',
+  description: 'API DOC',
+  version: '0.0.1'
+});
+router.map(UserRouter);
 
 export default router;

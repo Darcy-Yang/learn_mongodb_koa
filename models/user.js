@@ -1,14 +1,13 @@
 import mongoose from 'mongoose';
-
 const Schema = mongoose.Schema;
-const UserSchema = new Schema({
-  token: String,
+
+const userSchema = new Schema({
   userId: Schema.Types.ObjectId,
   name: String,
   password: String,
-  avatarUrl: String,
+  createdAt: Date,
 });
 
-const User = mongoose.model('user', UserSchema);
+const User = mongoose.model('user', userSchema);
 
 export default User;
