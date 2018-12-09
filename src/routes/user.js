@@ -79,6 +79,6 @@ export default class UserRouter {
 
     if (!user.length) throw new Error('该用户不存在');
 
-    ctx.body = { name };
+    ctx.body = { _id: user[0]._id, name };
   }
 }
