@@ -38,6 +38,24 @@ export default class UserRouter {
     ctx.body = { users };
   }
 
+  @request('GET', '/me')
+  @summary('get current user')
+  @userTag
+  @query({
+    _id: {
+      type: 'string',
+      required: true,
+      description: 'get user with user_id'
+    }
+  })
+
+  static async getCurrentUser(ctx) {
+    const { _id } = ctx.validatedQuery;
+    const user = await User.findById(_id);
+
+    ctx.body = { user };
+  }
+
   @request('POST', '/user')
   @summary('create account')
   @userTag

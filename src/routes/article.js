@@ -37,6 +37,11 @@ export default class ArticleRouter {
     let articles = [];
 
     articles = await Article.find({ $or: [{ title: reg }, { content: reg }] });
+    // 如果文章内容过长，只截取 Menu 列表能够展示的内容长度
+    articles.forEach((article) => {
+      article.title = (article.title.length > 35) ? article.title.slice(0, 35) : article.title;
+      article.content = (article.content.length > 56) ? article.content.slice(0, 56) : article.content;
+    })
 
     ctx.body = { articles };
 
