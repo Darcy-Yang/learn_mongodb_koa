@@ -28,20 +28,29 @@ export default class ArticleRouter {
       type: 'string',
       required: false,
       description: 'search for articles from title or content'
-    }
+    },
+    _id: {
+      type: 'string',
+      required: false,
+      description: 'get article with article_id'
+    },
   })
 
   static async getArticle(ctx) {
-    const { searchWord } = ctx.validatedQuery;
+    const { searchWord, _id } = ctx.validatedQuery;
     const reg = new RegExp(searchWord, 'i');
     let articles = [];
 
-    articles = await Article.find({ $or: [{ title: reg }, { content: reg }] });
-    // 如果文章内容过长，只截取 Menu 列表能够展示的内容长度
-    articles.forEach((article) => {
-      article.title = (article.title.length > 35) ? article.title.slice(0, 35) : article.title;
-      article.content = (article.content.length > 56) ? article.content.slice(0, 56) : article.content;
-    })
+    if (_id) {
+      articles = await Article.findById(_id);
+    } else {
+      articles = await Article.find({ $or: [{ title: reg }, { content: reg }] });
+      // 如果文章内容过长，只截取 Menu 列表能够展示的内容长度
+      articles.forEach((article) => {
+        article.title = (article.title.length > 35) ? article.title.slice(0, 35) : article.title;
+        article.content = (article.content.length > 56) ? article.content.slice(0, 56) : article.content;
+      });
+    }
 
     ctx.body = { articles };
 
