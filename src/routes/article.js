@@ -1,4 +1,4 @@
-import { request, summary, query, body, tags } from 'koa-swagger-decorator';
+import { request, summary, path, query, body, tags } from 'koa-swagger-decorator';
 
 import { Article, User } from '../models';
 
@@ -20,7 +20,8 @@ const articleSchema = {
 };
 
 export default class ArticleRouter {
-  @request('GET', '/article')
+  @request('GET', '/article/{type}')
+  @path({ type: { type: 'string', required: true, description: 'article type' } })
   @summary('get articles')
   @articleTag
   @query({
@@ -37,13 +38,14 @@ export default class ArticleRouter {
   })
 
   static async getArticle(ctx) {
+    const { type } = ctx.validatedParams;
     const { searchWord, _id } = ctx.validatedQuery;
     const reg = new RegExp(searchWord, 'i');
     let articles = [];
 
     if (_id) {
       articles = await Article.findById(_id);
-    } else {
+    } else if (type === 'all') {
       articles = await Article.find({ $or: [{ title: reg }, { content: reg }] });
       // 如果文章内容过长，只截取 Menu 列表能够展示的内容长度
       articles.forEach((article) => {
