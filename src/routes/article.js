@@ -86,4 +86,25 @@ export default class ArticleRouter {
 
     ctx.body = { success: 1 };
   }
+
+  // 更新笔记
+  @request('POST', '/article/{id}')
+  @path({
+    id: { type: 'string', required: true }
+  })
+  @body({
+    content: { type: 'string', required: true }
+  })
+  @summary('update note')
+  @articleTag
+  static async updateNote(ctx) {
+    const { id } = ctx.validatedParams
+    const { content } = ctx.validatedBody
+
+    if (!id || !content) return
+
+    await Article.findByIdAndUpdate(id, { content })
+
+    ctx.body = { success: 1 }
+  }
 }
