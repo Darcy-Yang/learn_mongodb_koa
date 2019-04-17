@@ -107,4 +107,22 @@ export default class ArticleRouter {
 
     ctx.body = { success: 1 }
   }
+
+  @request('POST', '/note/tag/{noteId}')
+  @path({ noteId: { type: 'string', required: true } })
+  @body({ tagIds: { type: 'object', item: 'string', required: true } })
+  @summary('update tags of note')
+  @articleTag
+  static async updateNoteTags(ctx) {
+    try {
+      const { noteId } = ctx.validatedParams
+      const { tagIds } = ctx.validatedBody
+
+      await Article.findOneAndUpdate({ _id: noteId }, { tagIds })
+
+      ctx.body = { success: 1 }
+    } catch (err) {
+      console.log('err: ', err)
+    }
+  }
 }
