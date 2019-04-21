@@ -5,7 +5,7 @@ const articleSchema = new Schema({
   userId: String,
   title: String,
   content: String,
-  tagInfo: Array,
+  tagInfo: { type: Array, default: [] },
   createdAt: Date,
 });
 
