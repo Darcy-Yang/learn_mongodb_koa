@@ -17,6 +17,10 @@ const articleSchema = {
     type: 'string',
     required: true,
   },
+  html: {
+    type: 'string',
+    required: true,
+  },
 };
 
 export default class ArticleRouter {
@@ -63,7 +67,7 @@ export default class ArticleRouter {
   @articleTag
   @body(articleSchema)
   static async createArticle(ctx) {
-    const { userId, title, content } = ctx.validatedBody;
+    const { userId, title, content, html } = ctx.validatedBody;
 
     if (!userId) {
       throw new Error('userId is required!');
@@ -81,6 +85,7 @@ export default class ArticleRouter {
       userId,
       title,
       content,
+      html,
       createdAt: new Date().toLocaleString(),
     });
 
@@ -93,17 +98,18 @@ export default class ArticleRouter {
     id: { type: 'string', required: true }
   })
   @body({
-    content: { type: 'string', required: true }
+    content: { type: 'string', required: true },
+    html: { type: 'string', required: true }
   })
   @summary('update note')
   @articleTag
   static async updateNote(ctx) {
     const { id } = ctx.validatedParams
-    const { content } = ctx.validatedBody
+    const { content, html } = ctx.validatedBody
 
     if (!id || !content) return
 
-    await Article.findByIdAndUpdate(id, { content })
+    await Article.findByIdAndUpdate(id, { content, html })
 
     ctx.body = { success: 1 }
   }
