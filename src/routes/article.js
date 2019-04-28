@@ -131,4 +131,59 @@ export default class ArticleRouter {
       console.log('err: ', err)
     }
   }
+
+  @request('POST', '/note/type/{noteId}')
+  @path({ noteId: { type: 'string', required: true } })
+  @body({ typeId: { type: 'string', required: true } })
+  @summary('add type of note')
+  @articleTag
+  static async updateNoteType(ctx) {
+    try {
+      const { noteId } = ctx.validatedParams
+      const { typeId } = ctx.validatedBody
+
+      const target = await Article.findById(noteId)
+      if (!target) throw Error('note not exist!')
+      const { typeList } = target
+      if (typeList.includes(typeId)) {
+        throw Error('type is exist in this note!')
+      } else {
+        typeList.push(typeId)
+      }
+
+      await Article.findByIdAndUpdate(noteId, { typeList })
+
+      ctx.body = { success: 1 }
+    } catch (err) {
+      console.log('err: ', err)
+    }
+  }
+
+  @request('DELETE', '/note/type/{noteId}')
+  @path({ noteId: { type: 'string', required: true } })
+  @body({ typeId: { type: 'string', required: true } })
+  @summary('delete type of note')
+  @articleTag
+  static async removeNoteType(ctx) {
+    try {
+      const { noteId } = ctx.validatedParams
+      const { typeId } = ctx.validatedBody
+
+      const target = await Article.findById(noteId)
+      if (!target) throw Error('note not exist!')
+      const { typeList } = target
+      const index = typeList.findIndex(typeId)
+      if (!~index) {
+        throw Error('type is not exist in this note!')
+      } else {
+        typeList.splice(index, 1)
+      }
+
+      await Article.findByIdAndUpdate(noteId, { typeList })
+
+      ctx.body = { success: 1 }
+    } catch (err) {
+      console.log('err: ', err)
+    }
+  }
 }

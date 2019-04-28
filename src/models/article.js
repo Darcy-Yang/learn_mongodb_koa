@@ -6,6 +6,7 @@ const articleSchema = new Schema({
   title: String,
   content: String,
   html: String,
+  typeList: { type: Array, default: [] },
   tagInfo: { type: Array, default: [] },
   createdAt: Date,
 });
